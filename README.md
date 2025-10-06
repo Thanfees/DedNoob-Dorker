@@ -25,4 +25,4 @@ DedNoob Dorker is a browser-based Google dork launcher tailored for bug bounty h
 - A modern browser (Chrome, Firefox, Edge, or Safari). No build step or server runtime is required.
 
 ## Credits
-Inspired by the work of CoffinXP and Lostsec. Watch more on [Lostsec YouTube](https://www.youtube.com/@lostsecc) or visit [lostsec.xyz](https://lostsec.xyz/coffin/dorking.html).
+Inspired by the work of CoffinXP - Lostsec. Watch more on [Lostsec YouTube](https://www.youtube.com/@lostsecc) or visit [lostsec.xyz](https://lostsec.xyz/coffin/dorking.html).
