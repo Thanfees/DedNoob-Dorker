@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DedNoob Dorker - Google Dork Search Tool</title>
+    <link rel="stylesheet" href="./dednoob-dorking_files/all.min.css">
+    <style>
+        :root {
+            --primary-color: #00b871;
+            --secondary-color: #16d981;
+            --accent-color: #00ff99;
+            --success-color: #00cc6a;
+            --bg-color: #ffffff;
+            --card-bg: #f4fbf6;
+            --text-color: #072013;
+            --text-secondary: #4c7f66;
+            --border-color: #c6e9d5;
+            --navbar-bg: #031b0f;
+            --navbar-text: #ecfff4;
+            --shadow: 0 4px 14px rgba(0,184,113,0.12);
+            --shadow-hover: 0 10px 22px rgba(0,184,113,0.22);
+            --primary-glow: rgba(0, 184, 113, 0.15);
+            --background-radial-1: rgba(22, 217, 129, 0.12);
+            --background-radial-2: rgba(0, 184, 113, 0.08);
+            --card-overlay: rgba(22, 217, 129, 0.08);
+            --card-overlay-strong: rgba(22, 217, 129, 0.14);
+            --cursor-x: 50%;
+            --cursor-y: 50%;
+            --transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #01a75c;
+            --secondary-color: #3acf93;
+            --accent-color: #00ff99;
+            --success-color: #00e676;
+            --bg-color: #000000;
+            --card-bg: #03160c;
+            --text-color: #e5fff4;
+            --text-secondary: #75ffbe;
+            --border-color: #0c3b25;
+            --navbar-bg: #000000;
+            --navbar-text: #75ffbe;
+            --shadow: 0 4px 18px rgba(0,255,140,0.12);
+            --shadow-hover: 0 10px 26px rgba(0,255,140,0.22);
+            --primary-glow: rgba(0, 255, 140, 0.16);
+            --background-radial-1: rgba(0, 255, 140, 0.08);
+            --background-radial-2: rgba(72, 255, 182, 0.05);
+            --card-overlay: rgba(0, 255, 140, 0.08);
+            --card-overlay-strong: rgba(0, 255, 140, 0.14);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            background-image:
+                radial-gradient(circle at top right, var(--background-radial-1), transparent 60%),
+                radial-gradient(circle at bottom left, var(--background-radial-2), transparent 65%);
+            background-attachment: fixed;
+            color: var(--text-color);
+            transition: var(--transition);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(420px circle at var(--cursor-x) var(--cursor-y), var(--primary-glow), transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+            transition: background 0.2s ease-out;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.2), transparent), var(--navbar-bg);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: var(--transition);
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            text-shadow: 0 0 12px var(--primary-glow);
+        }
+        
+        .logo i {
+            margin-right: 10px;
+        }
+        
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--navbar-text);
+            font-size: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            padding: 10px 18px;
+            border-radius: 999px;
+            backdrop-filter: blur(6px);
+        }
+
+        .theme-toggle:hover {
+            color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .theme-label {
+            font-size: 14px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .header h1 {
+            font-size: 42px;
+            color: var(--text-color);
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .header h1::after {
+            content: '';
+            position: absolute;
+            width: 60%;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            bottom: -10px;
+            left: 20%;
+            border-radius: 2px;
+        }
+        
+        .header p {
+            color: var(--text-secondary);
+            font-size: 18px;
+            max-width: 600px;
+            margin: 20px auto 0;
+        }
+        
+        .search-container {
+            background: linear-gradient(135deg, var(--card-overlay-strong), transparent), var(--card-bg);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            margin-bottom: 50px;
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(12px);
+        }
+
+        .domain-input {
+            width: 100%;
+            padding: 18px 25px;
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            font-size: 16px;
+            outline: none;
+            transition: var(--transition);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .domain-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px var(--primary-glow);
+        }
+
+        .tab-switcher {
+            margin: 25px 0 30px;
+            display: flex;
+            gap: 15px;
+            background: linear-gradient(135deg, var(--card-overlay), transparent);
+            padding: 10px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .tab-btn {
+            flex: 1;
+            border: 1px solid transparent;
+            background: var(--card-bg);
+            color: var(--text-color);
+            padding: 14px 20px;
+            border-radius: 999px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+
+        .tab-btn i {
+            font-size: 18px;
+            color: var(--primary-color);
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: #ffffff;
+            border-color: transparent;
+        }
+
+        .tab-btn.active i {
+            color: #ffffff;
+        }
+
+        .tab-panel {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        .file-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .inspired-note {
+            margin-bottom: 22px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .inspired-note a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .inspired-note a:hover {
+            text-decoration: underline;
+        }
+
+        .date-range {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0 10px;
+        }
+
+        .date-control {
+            flex: 1 1 200px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .date-control label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .date-control input {
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-color);
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            width: 100%;
+        }
+
+        .date-control input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+            outline: none;
+        }
+
+        .file-option {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .file-option input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .file-option span {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            border-radius: 40px;
+            border: 1px solid var(--border-color);
+            background: linear-gradient(135deg, var(--card-overlay), transparent), var(--card-bg);
+            color: var(--text-color);
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+
+        .file-option span i {
+            color: var(--primary-color);
+            font-size: 18px;
+        }
+
+        .file-option input:checked + span {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: #ffffff;
+            border-color: transparent;
+            box-shadow: var(--shadow-hover);
+        }
+
+        .file-option input:checked + span i {
+            color: #ffffff;
+        }
+
+        .custom-pattern,
+        .operator-input {
+            margin: 20px 0 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .custom-pattern label,
+        .operator-input label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .custom-pattern input,
+        .operator-input input {
+            padding: 12px 16px;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-color);
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            width: 100%;
+        }
+
+        .custom-pattern input:focus,
+        .operator-input input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+            outline: none;
+        }
+
+        .file-search-btn {
+            margin-top: 25px;
+            border: none;
+            border-radius: 50px;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .file-search-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .file-hint {
+            margin-top: 18px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .file-instructions {
+            margin-bottom: 20px;
+            font-size: 15px;
+            color: var(--text-secondary);
+        }
+
+        .url-instructions {
+            margin-bottom: 20px;
+            font-size: 15px;
+            color: var(--text-secondary);
+        }
+
+        .operator-cheatsheet {
+            margin-top: 25px;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            background: linear-gradient(145deg, var(--card-overlay), transparent), var(--card-bg);
+            box-shadow: var(--shadow);
+        }
+
+        .operator-cheatsheet h4 {
+            margin-bottom: 16px;
+            font-size: 16px;
+            color: var(--text-color);
+        }
+
+        .operator-cheatsheet dl {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px 24px;
+        }
+
+        .operator-cheatsheet dl > div {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .operator-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+            margin-bottom: 10px;
+        }
+
+        .operator-cheatsheet dt {
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 6px;
+        }
+
+        .operator-cheatsheet dd {
+            margin: 0;
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .team-links {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .team-card {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 16px;
+            border-radius: 14px;
+            background: linear-gradient(130deg, var(--card-overlay), transparent), var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+
+        .team-card i {
+            color: var(--primary-color);
+            font-size: 18px;
+        }
+
+        .team-card span {
+            font-size: 14px;
+        }
+
+        .team-card:hover {
+            transform: translateY(-3px);
+            color: var(--primary-color);
+            box-shadow: var(--shadow-hover);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dorks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        
+        .dork-card {
+            background: linear-gradient(145deg, var(--card-overlay), transparent), var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        
+        .dork-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
+            transform: scaleY(0);
+            transition: var(--transition);
+        }
+        
+        .dork-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary-color);
+        }
+        
+        .dork-card:hover::before {
+            transform: scaleY(1);
+        }
+        
+        .dork-card h3 {
+            color: var(--text-color);
+            margin-bottom: 12px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .dork-card p {
+            color: var(--text-secondary);
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .dork-card .icon {
+            font-size: 28px;
+            color: var(--primary-color);
+            margin-right: 12px;
+            display: inline-block;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 30px 20px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .social-links {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .social-links a {
+            color: var(--text-secondary);
+            font-size: 20px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--card-bg);
+            box-shadow: var(--shadow);
+        }
+        
+        .social-links a:hover {
+            color: var(--primary-color);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--success-color);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transform: translateX(120%);
+            transition: var(--transition);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .notification.error {
+            background-color: var(--accent-color);
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 32px;
+            }
+            
+            .search-container {
+                padding: 25px;
+            }
+
+            .tab-switcher {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .tab-btn {
+                font-size: 15px;
+                padding: 12px 16px;
+            }
+
+            .dorks-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 20px;
+            }
+
+            .file-options {
+                flex-direction: column;
+            }
+
+            .file-option span {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .file-search-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .social-links {
+                gap: 15px;
+            }
+            
+            .social-links a {
+                width: 35px;
+                height: 35px;
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/index.html" class="logo">
+            <i class="fas fa-search"></i> Dednoob Dorking
+        </a>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to light mode">
+            <span class="theme-label" id="themeToggleText">Light Mode</span>
+        </button>
+    </nav>
+    
+    <div class="container">
+        <div class="header">
+            <h1>DedNoob Dorker</h1>
+            <p>Advanced Dork Search Tool for Bug Bounty Hunters</p>
+        </div>
+        
+        <div class="search-container">
+            <input type="text" id="domainInput" class="domain-input" placeholder="Enter website domain (e.g., example.com)">
+
+            <div class="tab-switcher" role="tablist" aria-label="Dork type selector">
+                <button id="blindTabBtn" class="tab-btn active" data-tab="blindTab" type="button" aria-selected="true" aria-controls="blindTab">
+                    <i class="fas fa-bug"></i> Blind XSS Dorker
+                </button>
+                <button id="filesTabBtn" class="tab-btn" data-tab="filesTab" type="button" aria-selected="false" aria-controls="filesTab">
+                    <i class="fas fa-file-code"></i> Files Dorker
+                </button>
+                <button id="urlTabBtn" class="tab-btn" data-tab="urlTab" type="button" aria-selected="false" aria-controls="urlTab">
+                    <i class="fas fa-link"></i> URL Matcher
+                </button>
+            </div>
+
+            <div id="blindTab" class="tab-panel active" role="tabpanel" aria-labelledby="blindTabBtn">
+                <p class="inspired-note">Inspired by Lostsec — explore more on <a href="https://www.youtube.com/@lostsecc" target="_blank" rel="noopener">YouTube</a> and <a href="https://lostsec.xyz/coffin/dorking.html" target="_blank" rel="noopener">lostsec.xyz</a>.</p>
+                <div class="dorks-grid">
+                <div class="dork-card" data-dork="contactForm">
+                    <h3><i class="fas fa-file-alt icon"></i> Contact Us Form</h3>
+                    <p>Finds contact forms with specific file names</p>
+                </div>
+                
+                <div class="dork-card" data-dork="contactPage">
+                    <h3><i class="fas fa-file icon"></i> Contact Us Page</h3>
+                    <p>Finds contact pages with specific URLs</p>
+                </div>
+                
+                <div class="dork-card" data-dork="feedbackForm">
+                    <h3><i class="fas fa-comment-dots icon"></i> Feedback Form</h3>
+                    <p>Finds feedback forms and submission pages</p>
+                </div>
+                
+                <div class="dork-card" data-dork="submitRequest">
+                    <h3><i class="fas fa-paper-plane icon"></i> Submit a Request Page</h3>
+                    <p>Finds pages for submitting requests</p>
+                </div>
+                
+                <div class="dork-card" data-dork="contactSupport">
+                    <h3><i class="fas fa-headset icon"></i> Contact Support</h3>
+                    <p>Finds support contact pages</p>
+                </div>
+                
+                <div class="dork-card" data-dork="submitPages">
+                    <h3><i class="fas fa-upload icon"></i> Submit Pages</h3>
+                    <p>Finds pages for submitting information</p>
+                </div>
+                
+                <div class="dork-card" data-dork="supportCenter">
+                    <h3><i class="fas fa-life-ring icon"></i> Support Center</h3>
+                    <p>Finds support center pages</p>
+                </div>
+                
+                <div class="dork-card" data-dork="submitForms">
+                    <h3><i class="fas fa-clipboard-list icon"></i> Submit Forms</h3>
+                    <p>Finds various submission forms</p>
+                </div>
+                
+                <div class="dork-card" data-dork="requestSubmit">
+                    <h3><i class="fas fa-sync-alt icon"></i> Request a Submit</h3>
+                    <p>Finds pages for submitting requests</p>
+                </div>
+                
+                <div class="dork-card" data-dork="reportPages">
+                    <h3><i class="fas fa-exclamation-triangle icon"></i> Report Pages</h3>
+                    <p>Finds pages for submitting reports</p>
+                </div>
+                
+                <div class="dork-card" data-dork="formPages">
+                    <h3><i class="fas fa-file-contract icon"></i> Form Pages</h3>
+                    <p>Finds pages with specific form text</p>
+                </div>
+                
+                <div class="dork-card" data-dork="requestTypeForms">
+                    <h3><i class="fas fa-file-signature icon"></i> Request Type Forms</h3>
+                    <p>Finds request forms with specific URLs</p>
+                </div>
+                
+                <!-- New Blind XSS Dorks -->
+                <div class="dork-card" data-dork="jobApplication">
+                    <h3><i class="fas fa-briefcase icon"></i> Job Application Forms</h3>
+                    <p>Finds forms for job applications</p>
+                </div>
+                
+                <div class="dork-card" data-dork="newsletterSubscription">
+                    <h3><i class="fas fa-envelope icon"></i> Newsletter Subscription</h3>
+                    <p>Finds newsletter signup forms</p>
+                </div>
+                
+                <div class="dork-card" data-dork="supportTickets">
+                    <h3><i class="fas fa-ticket-alt icon"></i> Support Tickets</h3>
+                    <p>Finds support ticket submission forms</p>
+                </div>
+                
+                <div class="dork-card" data-dork="reportAbuse">
+                    <h3><i class="fas fa-shield-alt icon"></i> Report Abuse</h3>
+                    <p>Finds forms for reporting abuse</p>
+                </div>
+                
+                <div class="dork-card" data-dork="testimonialSubmission">
+                    <h3><i class="fas fa-quote-right icon"></i> Testimonial Submission</h3>
+                    <p>Finds forms for submitting testimonials</p>
+                </div>
+                
+                <div class="dork-card" data-dork="askQuestion">
+                    <h3><i class="fas fa-question-circle icon"></i> Ask a Question</h3>
+                    <p>Finds forms for asking questions</p>
+                </div>
+                
+                <div class="dork-card" data-dork="requestCallback">
+                    <h3><i class="fas fa-phone-alt icon"></i> Request a Callback</h3>
+                    <p>Finds forms for requesting callbacks</p>
+                </div>
+                
+                <div class="dork-card" data-dork="bugReport">
+                    <h3><i class="fas fa-bug icon"></i> Bug Report Forms</h3>
+                    <p>Finds forms for reporting bugs</p>
+                </div>
+                
+                <div class="dork-card" data-dork="suggestionBox">
+                    <h3><i class="fas fa-lightbulb icon"></i> Suggestion Box</h3>
+                    <p>Finds forms for submitting suggestions</p>
+                </div>
+                
+                <div class="dork-card" data-dork="registrationForms">
+                    <h3><i class="fas fa-user-plus icon"></i> Registration Forms</h3>
+                    <p>Finds user registration forms</p>
+                </div>
+                
+                <div class="dork-card" data-dork="quoteRequest">
+                    <h3><i class="fas fa-calculator icon"></i> Quote Request Forms</h3>
+                    <p>Finds forms for requesting quotes</p>
+                </div>
+                
+                <div class="dork-card" data-dork="reviewSubmission">
+                    <h3><i class="fas fa-star icon"></i> Review Submission</h3>
+                    <p>Finds forms for submitting reviews</p>
+                </div>
+                </div>
+            </div>
+
+            <div id="filesTab" class="tab-panel" role="tabpanel" aria-labelledby="filesTabBtn" hidden>
+                <p class="file-instructions">Select one or more file types, optionally set a date range, then launch the Google dork.</p>
+                <div class="date-range" role="group" aria-label="Optional date filters">
+                    <div class="date-control">
+                        <label for="filesAfter">After (optional)</label>
+                        <input type="date" id="filesAfter" name="filesAfter">
+                    </div>
+                    <div class="date-control">
+                        <label for="filesBefore">Before (optional)</label>
+                        <input type="date" id="filesBefore" name="filesBefore">
+                    </div>
+                </div>
+                <div class="file-options" role="group" aria-label="File types">
+                    <label class="file-option">
+                        <input type="checkbox" value="pdf">
+                        <span><i class="fas fa-file-pdf"></i> PDF</span>
+                    </label>
+                    <label class="file-option">
+                        <input type="checkbox" value="excel">
+                        <span><i class="fas fa-file-excel"></i> Excel (XLS/XLSX)</span>
+                    </label>
+                    <label class="file-option">
+                        <input type="checkbox" value="docx">
+                        <span><i class="fas fa-file-word"></i> Word Docs (DOC/DOCX)</span>
+                    </label>
+                    <label class="file-option">
+                        <input type="checkbox" value="env">
+                        <span><i class="fas fa-exclamation-triangle"></i> Environment (.env)</span>
+                    </label>
+                    <label class="file-option">
+                        <input type="checkbox" value="csv">
+                        <span><i class="fas fa-table"></i> CSV</span>
+                    </label>
+                    <label class="file-option">
+                        <input type="checkbox" value="log">
+                        <span><i class="fas fa-file-alt"></i> Log Files</span>
+                    </label>
+                    <label class="file-option">
+                        <input type="checkbox" value="other">
+                        <span><i class="fas fa-user-secret"></i> Other Sensitive</span>
+                    </label>
+                </div>
+                <button type="button" class="file-search-btn">
+                    <i class="fas fa-search"></i> Search Selected Files
+                </button>
+                <p class="file-hint">Pick one or more file types to hunt for exposed documents on the target domain.</p>
+            </div>
+
+            <div id="urlTab" class="tab-panel" role="tabpanel" aria-labelledby="urlTabBtn" hidden>
+                <p class="url-instructions">Add keywords for each operator to build advanced queries. Leave any field blank to skip that operator.</p>
+                <div class="operator-grid">
+                    <div class="operator-input">
+                        <label for="opAllInText">allintext</label>
+                        <input type="text" id="opAllInText" placeholder="keyword1 keyword2">
+                    </div>
+                    <div class="operator-input">
+                        <label for="opInText">intext</label>
+                        <input type="text" id="opInText" placeholder="keyword1 keyword2">
+                    </div>
+                    <div class="operator-input">
+                        <label for="opInUrl">inurl</label>
+                        <input type="text" id="opInUrl" placeholder="login admin">
+                    </div>
+                    <div class="operator-input">
+                        <label for="opAllInUrl">allinurl</label>
+                        <input type="text" id="opAllInUrl" placeholder="secure portal">
+                    </div>
+                    <div class="operator-input">
+                        <label for="opInTitle">intitle</label>
+                        <input type="text" id="opInTitle" placeholder="dashboard">
+                    </div>
+                    <div class="operator-input">
+                        <label for="opAllInTitle">allintitle</label>
+                        <input type="text" id="opAllInTitle" placeholder="admin panel">
+                    </div>
+                    <div class="operator-input">
+                        <label for="opLink">link</label>
+                        <input type="text" id="opLink" placeholder="example.com">
+                    </div>
+                </div>
+                <div class="custom-pattern">
+                    <label for="customUrlPattern">Additional `inurl:` keyword (optional)</label>
+                    <input type="text" id="customUrlPattern" name="customUrlPattern" placeholder="e.g., payment" autocomplete="off">
+                </div>
+                <button type="button" class="file-search-btn url-search-btn">
+                    <i class="fas fa-search"></i> Build URL Dork
+                </button>
+                <p class="file-hint">Mix operators to narrow results. Example: `site:example.com AND inurl:login AND allintext:"reset password"`.</p>
+                <div class="operator-cheatsheet">
+                    <h4>Google Dork Operators Cheat Sheet</h4>
+                    <dl>
+                        <div>
+                            <dt>allintext</dt>
+                            <dd>Finds pages where all specified keywords appear in the body text.</dd>
+                        </div>
+                        <div>
+                            <dt>intext</dt>
+                            <dd>Locates pages that include any of the keywords within the body content.</dd>
+                        </div>
+                        <div>
+                            <dt>inurl</dt>
+                            <dd>Searches for URLs containing at least one of the provided keywords.</dd>
+                        </div>
+                        <div>
+                            <dt>allinurl</dt>
+                            <dd>Returns URLs that include every keyword listed in the query.</dd>
+                        </div>
+                        <div>
+                            <dt>intitle</dt>
+                            <dd>Targets pages whose titles contain any of the given keywords.</dd>
+                        </div>
+                        <div>
+                            <dt>allintitle</dt>
+                            <dd>Matches pages with titles that include all keywords together.</dd>
+                        </div>
+                        <div>
+                            <dt>link</dt>
+                            <dd>Finds pages that link externally to the specified URL or keyword.</dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>© Dednoob 2025 — All rights reserved. Built for bug bounty hunters. Use ethically.</p>
+        
+
+        <div class="team-links" aria-label="Team profiles">
+            <a class="team-card" href="https://www.linkedin.com" target="_blank" title="Developer on LinkedIn">
+                <i class="fab fa-linkedin"></i>
+                <span>Developer LinkedIn</span>
+            </a>
+            <a class="team-card" href="https://github.com" target="_blank" title="Developer on GitHub">
+                <i class="fab fa-github"></i>
+                <span>Developer GitHub</span>
+            </a>
+            <a class="team-card" href="https://www.linkedin.com" target="_blank" title="Collaborator on LinkedIn">
+                <i class="fab fa-linkedin"></i>
+                <span>Collaborator LinkedIn</span>
+            </a>
+            <a class="team-card" href="https://github.com" target="_blank" title="Collaborator on GitHub">
+                <i class="fab fa-github"></i>
+                <span>Collaborator GitHub</span>
+            </a>
+        </div>
+    </div>
+    
+    <div id="notification" class="notification">
+        <i class="fas fa-check-circle"></i> <span>Search executed successfully!</span>
+    </div>
+
+            <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const domainInput = document.getElementById('domainInput');
+            const dorkCards = document.querySelectorAll('.dork-card');
+            const notification = document.getElementById('notification');
+            const themeToggle = document.getElementById('themeToggle');
+            const themeLabel = document.getElementById('themeToggleText');
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabPanels = document.querySelectorAll('.tab-panel');
+            const fileSearchBtn = document.querySelector('#filesTab .file-search-btn');
+            const urlSearchBtn = document.querySelector('#urlTab .url-search-btn');
+            const fileOptions = document.querySelectorAll('#filesTab .file-option input');
+            const urlOptions = document.querySelectorAll('#urlTab .file-option input');
+            const filesAfterInput = document.getElementById('filesAfter');
+            const filesBeforeInput = document.getElementById('filesBefore');
+            const customUrlPattern = document.getElementById('customUrlPattern');
+            const opAllInText = document.getElementById('opAllInText');
+            const opInText = document.getElementById('opInText');
+            const opInUrl = document.getElementById('opInUrl');
+            const opAllInUrl = document.getElementById('opAllInUrl');
+            const opInTitle = document.getElementById('opInTitle');
+            const opAllInTitle = document.getElementById('opAllInTitle');
+            const opLink = document.getElementById('opLink');
+            const root = document.documentElement;
+            let mouseMoveRaf = null;
+
+            const updateGlowPosition = (event) => {
+                if (mouseMoveRaf) {
+                    return;
+                }
+                mouseMoveRaf = requestAnimationFrame(() => {
+                    const x = (event.clientX / window.innerWidth) * 100;
+                    const y = (event.clientY / window.innerHeight) * 100;
+                    root.style.setProperty('--cursor-x', `${x}%`);
+                    root.style.setProperty('--cursor-y', `${y}%`);
+                    mouseMoveRaf = null;
+                });
+            };
+
+            window.addEventListener('mousemove', updateGlowPosition);
+            window.addEventListener('mouseout', (event) => {
+                if (!event.relatedTarget && !event.toElement) {
+                    root.style.setProperty('--cursor-x', '50%');
+                    root.style.setProperty('--cursor-y', '50%');
+                }
+            });
+
+            tabPanels.forEach((panel) => {
+                panel.toggleAttribute('hidden', !panel.classList.contains('active'));
+            });
+
+            tabButtons.forEach((button) => {
+                button.setAttribute('aria-selected', button.classList.contains('active') ? 'true' : 'false');
+            });
+
+            const dorks = {
+                contactForm: [
+                    'intitle:"contact.php"',
+                    'intitle:"contactus"',
+                    'intitle:"contactus.php"',
+                    'intitle:"contactus.aspx"',
+                    'intitle:"contactus.asp"',
+                    'intitle:"contactus.html"',
+                    'intitle:"contact-us.html"',
+                    'intitle:"contact_us.html"',
+                    'intitle:"contact.html"'
+                ],
+                contactPage: [
+                    'inurl:"contact.php"',
+                    'inurl:"contactus"',
+                    'inurl:"contactus.php"',
+                    'inurl:"contactus.aspx"',
+                    'inurl:"contactus.asp"',
+                    'inurl:"contactus.html"',
+                    'inurl:"contact-us.html"',
+                    'inurl:"contact_us.html"',
+                    'inurl:"contact.html"'
+                ],
+                feedbackForm: [
+                    'inurl:"feedback.php"',
+                    'inurl:"send feedback"',
+                    'inurl:"feedbackus.php"',
+                    'inurl:"feedback.aspx"',
+                    'inurl:"feedback.asp"',
+                    'inurl:"feedback.html"',
+                    'intitle:"send feedback"'
+                ],
+                submitRequest: [
+                    'inurl:"Send Us a Message"',
+                    'intitle:"Send Us a Message"'
+                ],
+                contactSupport: [
+                    'intitle:"support.php"',
+                    'intitle:"support"',
+                    'intitle:"contactus.php"',
+                    'intitle:"support.aspx"',
+                    'intitle:"support.asp"',
+                    'intitle:"support.html"',
+                    'intitle:"support-us.html"'
+                ],
+                submitPages: [
+                    'inurl:"submit messages"',
+                    'inurl:"submit"',
+                    'inurl:"submit form"',
+                    'intitle:"submit form"'
+                ],
+                supportCenter: [
+                    'inurl:"Support Center"',
+                    'intitle:"Support Center"'
+                ],
+                submitForms: [
+                    'intitle:"submit.php"',
+                    'intitle:"submit"',
+                    'intitle:"submit.aspx"',
+                    'intitle:"submit.asp"',
+                    'intitle:"submit.html"',
+                    'intitle:"submit-us.html"',
+                    'intitle:"submit_us.html"'
+                ],
+                requestSubmit: [
+                    'inurl:"submit a request"',
+                    'intitle:"submit a request"'
+                ],
+                reportPages: [
+                    'inurl:"submit a report"',
+                    'intitle:"submit a report"'
+                ],
+                formPages: [
+                    'intext:"Attachments (optional)"'
+                ],
+                requestTypeForms: [
+                    'inurl:"request-form"',
+                    'inurl:"submit-a-request"',
+                    'inurl:"request-form.aspx"',
+                    'inurl:"request.php"',
+                    'intitle:"request form"'
+                ],
+                jobApplication: [
+                    'intitle:"job application"',
+                    'intitle:"careers"',
+                    'intitle:"apply now"',
+                    'inurl:"job"',
+                    'inurl:"career"',
+                    'inurl:"apply"'
+                ],
+                newsletterSubscription: [
+                    'intitle:"newsletter"',
+                    'intitle:"subscribe"',
+                    'inurl:"newsletter"',
+                    'inurl:"subscribe"'
+                ],
+                supportTickets: [
+                    'intitle:"support ticket"',
+                    'intitle:"create ticket"',
+                    'inurl:"ticket"',
+                    'inurl:"support"'
+                ],
+                reportAbuse: [
+                    'intitle:"report abuse"',
+                    'intitle:"report"',
+                    'inurl:"report"',
+                    'inurl:"abuse"'
+                ],
+                testimonialSubmission: [
+                    'intitle:"testimonial"',
+                    'intitle:"submit testimonial"',
+                    'inurl:"testimonial"',
+                    'inurl:"review"'
+                ],
+                askQuestion: [
+                    'intitle:"ask a question"',
+                    'intitle:"question"',
+                    'inurl:"question"',
+                    'inurl:"ask"'
+                ],
+                requestCallback: [
+                    'intitle:"request a callback"',
+                    'intitle:"callback"',
+                    'inurl:"callback"',
+                    'inurl:"call"'
+                ],
+                bugReport: [
+                    'intitle:"bug report"',
+                    'intitle:"report bug"',
+                    'inurl:"bug"',
+                    'inurl:"report"'
+                ],
+                suggestionBox: [
+                    'intitle:"suggestion"',
+                    'intitle:"feedback"',
+                    'inurl:"suggestion"',
+                    'inurl:"idea"'
+                ],
+                registrationForms: [
+                    'intitle:"register"',
+                    'intitle:"sign up"',
+                    'inurl:"register"',
+                    'inurl:"signup"'
+                ],
+                quoteRequest: [
+                    'intitle:"quote request"',
+                    'intitle:"get a quote"',
+                    'inurl:"quote"',
+                    'inurl:"request"'
+                ],
+                reviewSubmission: [
+                    'intitle:"write a review"',
+                    'intitle:"review"',
+                    'inurl:"review"',
+                    'inurl:"rating"'
+                ]
+            };
+
+            const fileDorks = {
+                pdf: ['filetype:pdf'],
+                excel: ['filetype:xls', 'filetype:xlsx'],
+                docx: ['filetype:doc', 'filetype:docx'],
+                env: ['inurl:.env', 'ext:env', '"APP_KEY"', '"DB_PASSWORD"'],
+                csv: ['filetype:csv'],
+                log: ['filetype:log', 'inurl:.log'],
+                other: ['filetype:sql', 'filetype:json', 'filetype:conf', 'inurl:backup', 'inurl:credentials']
+            };
+
+            const urlDorks = {
+                admin: ['inurl:admin', 'inurl:dashboard', 'inurl:controlpanel'],
+                login: ['inurl:login', 'inurl:signin', 'intitle:"login"'],
+                backup: ['inurl:backup', 'inurl:bak', 'filetype:zip'],
+                config: ['inurl:config', 'filetype:ini', 'filetype:conf'],
+                staging: ['inurl:staging', 'inurl:preprod', 'site:staging.{domain}'],
+                test: ['inurl:test', 'inurl:qa', 'intitle:"test"'],
+                upload: ['inurl:upload', 'inurl:fileupload', 'intitle:"upload"']
+            };
+
+            function updateThemeIcon(theme) {
+                if (theme === 'dark') {
+                    if (themeLabel) {
+                        themeLabel.textContent = 'Light Mode';
+                    }
+                    themeToggle.setAttribute('aria-label', 'Switch to light mode');
+                } else {
+                    if (themeLabel) {
+                        themeLabel.textContent = 'Dark Mode';
+                    }
+                    themeToggle.setAttribute('aria-label', 'Switch to dark mode');
+                }
+            }
+
+            function toggleTheme() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            }
+
+            function getCleanDomain() {
+                const rawDomain = domainInput.value.trim();
+                if (!rawDomain) {
+                    showNotification('Please enter a domain', 'error');
+                    return null;
+                }
+
+                let cleanDomain = rawDomain;
+                if (cleanDomain.startsWith('http://')) cleanDomain = cleanDomain.substring(7);
+                if (cleanDomain.startsWith('https://')) cleanDomain = cleanDomain.substring(8);
+                if (cleanDomain.startsWith('www.')) cleanDomain = cleanDomain.substring(4);
+                if (cleanDomain.endsWith('/')) cleanDomain = cleanDomain.slice(0, -1);
+
+                return cleanDomain;
+            }
+
+            function buildLogicQuery(domain, patterns = [], extras = []) {
+                const baseTokens = [`site:${domain}`];
+                const uniquePatterns = [...new Set((patterns || []).map((pattern) => pattern.trim()).filter(Boolean))];
+
+                if (uniquePatterns.length === 1) {
+                    baseTokens.push(uniquePatterns[0]);
+                } else if (uniquePatterns.length > 1) {
+                    baseTokens.push(`(${uniquePatterns.join(' OR ')})`);
+                }
+
+                const uniqueExtras = [...new Set((extras || []).map((extra) => extra.trim()).filter(Boolean))];
+                baseTokens.push(...uniqueExtras);
+
+                return baseTokens.join(' AND ');
+            }
+
+            function executeDorkSearch(dorkType) {
+                const cleanDomain = getCleanDomain();
+                if (!cleanDomain) {
+                    return;
+                }
+
+                const patterns = dorks[dorkType];
+                if (!patterns) {
+                    showNotification('No dork pattern found for this card', 'error');
+                    return;
+                }
+
+                const query = buildLogicQuery(cleanDomain, patterns);
+                if (!query) {
+                    showNotification('Unable to build search query', 'error');
+                    return;
+                }
+
+                const encodedDork = encodeURIComponent(query);
+                const searchUrl = `https://www.google.com/search?q=${encodedDork}`;
+                window.open(searchUrl, '_blank');
+                showNotification('Search executed successfully!');
+            }
+
+            function executeFileSearch() {
+                const cleanDomain = getCleanDomain();
+                if (!cleanDomain) {
+                    return;
+                }
+
+                const selectedTypes = Array.from(fileOptions)
+                    .filter((option) => option.checked)
+                    .map((option) => option.value);
+
+                if (!selectedTypes.length) {
+                    showNotification('Select at least one file type', 'error');
+                    return;
+                }
+
+                const segments = [];
+                selectedTypes.forEach((type) => {
+                    const patterns = fileDorks[type];
+                    if (patterns && patterns.length) {
+                        segments.push(...patterns);
+                    }
+                });
+
+                const extras = [];
+                const afterValue = filesAfterInput?.value;
+                const beforeValue = filesBeforeInput?.value;
+
+                if (afterValue && beforeValue && afterValue > beforeValue) {
+                    showNotification('After date must be before the before date', 'error');
+                    return;
+                }
+
+                if (afterValue) {
+                    extras.push(`after:${afterValue}`);
+                }
+
+                if (beforeValue) {
+                    extras.push(`before:${beforeValue}`);
+                }
+
+                const query = buildLogicQuery(cleanDomain, segments, extras);
+                if (!query) {
+                    showNotification('No dorks available for the selected types', 'error');
+                    return;
+                }
+
+                const encodedDork = encodeURIComponent(query);
+                const searchUrl = `https://www.google.com/search?q=${encodedDork}`;
+                window.open(searchUrl, '_blank');
+                showNotification('File search executed successfully!');
+            }
+
+            function executeUrlSearch() {
+                const cleanDomain = getCleanDomain();
+                if (!cleanDomain) {
+                    return;
+                }
+
+                const segments = [];
+
+                const selectedTypes = Array.from(urlOptions)
+                    .filter((option) => option.checked)
+                    .map((option) => option.value);
+
+                selectedTypes.forEach((type) => {
+                    const patterns = urlDorks[type];
+                    if (patterns && patterns.length) {
+                        const replacedPatterns = patterns.map((pattern) => pattern.replace('{domain}', cleanDomain));
+                        segments.push(...replacedPatterns);
+                    }
+                });
+
+                const extras = [];
+
+                const addOperator = (prefix, input, useQuotes = false, allMode = false) => {
+                    const value = input?.value.trim();
+                    if (!value) {
+                        return;
+                    }
+                    if (allMode) {
+                        extras.push(`${prefix}:"${value.replace(/"/g, '')}"`);
+                    } else {
+                        const tokens = value.split(/\s+/).filter(Boolean);
+                        tokens.forEach(token => {
+                            const formatted = useQuotes ? `"${token.replace(/"/g, '')}"` : token;
+                            extras.push(`${prefix}:${formatted}`);
+                        });
+                    }
+                };
+
+                addOperator('allintext', opAllInText, true, true);
+                addOperator('intext', opInText, true, false);
+                addOperator('inurl', opInUrl, false, false);
+                addOperator('allinurl', opAllInUrl, false, true);
+                addOperator('intitle', opInTitle, true, false);
+                addOperator('allintitle', opAllInTitle, true, true);
+                addOperator('link', opLink, false, false);
+
+                const customPattern = customUrlPattern?.value.trim();
+                if (customPattern) {
+                    const sanitized = customPattern.replace(/\s+/g, '');
+                    if (sanitized.length) {
+                        extras.push(`inurl:${sanitized}`);
+                    }
+                }
+
+                if (!segments.length && !extras.length) {
+                    showNotification('Provide operator keywords or custom inurl value', 'error');
+                    return;
+                }
+
+                const query = buildLogicQuery(cleanDomain, segments, extras);
+                if (!query) {
+                    showNotification('Unable to build search query', 'error');
+                    return;
+                }
+
+                const encodedDork = encodeURIComponent(query);
+                const searchUrl = `https://www.google.com/search?q=${encodedDork}`;
+                window.open(searchUrl, '_blank');
+                showNotification('URL search executed successfully!');
+            }
+
+            function showNotification(message, type = 'success') {
+                const notificationText = notification.querySelector('span');
+                notificationText.textContent = message;
+
+                if (type === 'error') {
+                    notification.classList.add('error');
+                    notification.querySelector('i').className = 'fas fa-exclamation-circle';
+                } else {
+                    notification.classList.remove('error');
+                    notification.querySelector('i').className = 'fas fa-check-circle';
+                }
+
+                notification.classList.add('show');
+
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+
+            themeToggle.addEventListener('click', toggleTheme);
+
+            tabButtons.forEach((button) => {
+                button.addEventListener('click', () => {
+                    if (button.classList.contains('active')) {
+                        return;
+                    }
+
+                    const targetId = button.dataset.tab;
+
+                    tabButtons.forEach((btn) => {
+                        const isActive = btn === button;
+                        btn.classList.toggle('active', isActive);
+                        btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+                    });
+
+                    tabPanels.forEach((panel) => {
+                        const isActive = panel.id === targetId;
+                        panel.classList.toggle('active', isActive);
+                        panel.toggleAttribute('hidden', !isActive);
+                    });
+                });
+            });
+
+            if (fileSearchBtn) {
+                fileSearchBtn.addEventListener('click', executeFileSearch);
+            }
+
+            if (urlSearchBtn) {
+                urlSearchBtn.addEventListener('click', executeUrlSearch);
+            }
+
+            dorkCards.forEach((card) => {
+                card.addEventListener('click', function() {
+                    const dorkType = this.getAttribute('data-dork');
+                    executeDorkSearch(dorkType);
+                });
+            });
+
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        });
+    </script>
+
+</body></html>
